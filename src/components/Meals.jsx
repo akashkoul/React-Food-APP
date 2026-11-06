@@ -19,11 +19,11 @@ export default function Meals() {
 
   return (
     <section id="meals">
-      <h2>Our Meals</h2>
-      <ul id="meals"></ul>
-      {meals.map((meal) => (
-        <MealItem key={meal.id} meal={meal} />
-      ))}
+      <ul id="meals">
+        {meals.map((meal) => (
+          <MealItem key={meal.id} meal={meal} />
+        ))}
+      </ul>
       {/* Meals will be displayed here */}
     </section>
   );
