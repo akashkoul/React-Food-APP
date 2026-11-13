@@ -4,21 +4,22 @@ const CartContext = createContext({
   items: [],
   addItem: (item) => {},
   removeItem: (id) => {},
+  clearCart: () => {},
 });
 
 function cartReducer(state, action) {
   if (action.type === "ADD_ITEM") {
-    const existingItemIndex = state.items.findIndex(
+    const existingCarItemIndex = state.items.findIndex(
       (i) => i.id === action.item.id,
     );
     const updatedItems = [...state.items];
-    if (existingItemIndex > -1) {
-      const existingItem = state.items[existingItemIndex];
+    if (existingCarItemIndex > -1) {
+      const existingItem = state.items[existingCarItemIndex];
       const updatedItem = {
         ...existingItem,
         quantity: existingItem.quantity + 1,
       };
-      updatedItems[existingItemIndex] = updatedItem;
+      updatedItems[existingCarItemIndex] = updatedItem;
     } else {
       updatedItems.push({ ...action.item, quantity: 1 });
     }
@@ -31,16 +32,19 @@ function cartReducer(state, action) {
     );
     let updatedItems = [...state.items];
     if (updatedItems[existingCarItemIndex].quantity === 1) {
-      updatedItems = updatedItems.splice(existingCarItemIndex, 1);
+      updatedItems.splice(existingCarItemIndex, 1);
     } else {
-      const existingItem = state.items[existingItemIndex];
+      const existingItem = state.items[existingCarItemIndex];
       const updatedItem = {
         ...existingItem,
         quantity: existingItem.quantity - 1,
       };
-      updatedItems[existingItemIndex] = updatedItem;
+      updatedItems[existingCarItemIndex] = updatedItem;
     }
     return { ...state, items: updatedItems };
+  }
+  if (action.type === "CLEAR_CART") {
+    return { ...state, items: [] };
   }
 
   return state;
@@ -55,14 +59,20 @@ export function ContextProvider({ children }) {
   function removeItem(id) {
     dispatchCartAction({ type: "REMOVE_ITEM", id });
   }
+  function clearCart(id) {
+    dispatchCartAction({ type: "CLEAR_CART" });
+  }
   const cartContext = {
     items: cart.items,
     addItem,
     removeItem,
+    clearCart,
   };
 
-  console.log(cartContext)
-  return <CartContext.Provider value={cartContext}>{children}</CartContext.Provider>;
+  console.log(cartContext);
+  return (
+    <CartContext.Provider value={cartContext}>{children}</CartContext.Provider>
+  );
 }
 
 export default CartContext;
